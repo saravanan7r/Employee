@@ -9,7 +9,61 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.sql.*;
 
-
+class  Employee {
+    private String employeeId;
+    private String employeeName;
+    private String employeeEmailId;
+    private String employeeDob;
+    private String employeeDoj;
+    
+    Employee(String employeeId,String employeeName,String employeeEmailId,String employeeDob,String employeeDoj)
+    {
+  	  this.employeeId=employeeId;
+  	  this.employeeName=employeeName;
+  	  this.employeeEmailId=employeeEmailId;
+  	  this.employeeDob=employeeDob;
+  	  this.employeeDoj=employeeDoj;
+    }
+	public String getEmployeeId() {
+		return employeeId;
+	}
+	public String getEmployeeName() {
+		return employeeName;
+	}
+	public String getEmployeeEmailId() {
+		return employeeEmailId;
+	}
+	public String getEmployeeDob() {
+		return employeeDob;
+	}
+	public String getEmployeeDoj() {
+		return employeeDoj;
+	}
+	public String toString()
+	{
+		return employeeId+" "+employeeName+" "+employeeEmailId+" "+employeeDob+" "+employeeDoj;
+	}
+	public String validateId()
+	{
+		return employeeId;
+	}
+	public String validateName()
+	{
+		return employeeName;
+	}
+	public String validateEmailId()
+	{
+		return employeeEmailId;
+	}
+	public String validateDob()
+	{
+		return employeeDob;
+	}
+	public String validateDoj()
+	{
+		return employeeDoj;
+	}
+}
 public class EmployeeDetails extends Employee{
 
 	EmployeeDetails(String employeeId, String employeeName, String employeeEmailId, String employeeDob,
@@ -134,9 +188,9 @@ public String validateDoj()
 			String employeeDob=validateDob();
 			String employeeDoj=validateDoj();
 			try {
-			Connection connect =DriverManager.getConnection("jdbc:mysql://localhost:3306/s","root","saro@2001");
+			Connection connect =DriverManager.getConnection("jdbc:mysql://localhost:3306/emp","root","Aspire@123");
 
-				PreparedStatement prepared=connect.prepareStatement("INSERT INTO emp(EmployeeId,EmployeeName,EmployeeEmailId,EmployeeDob,EmployeeDoj) VALUES(?,?,?,?,?)");
+				PreparedStatement prepared=connect.prepareStatement("INSERT INTO employee(Id,Name,EmailId,Dob,Doj) VALUES(?,?,?,?,?)");
 				prepared.setString(1, employeeId);
 				prepared.setString(2, employeeName);
 				prepared.setString(3, employeeEmailId);
@@ -170,8 +224,8 @@ public String validateDoj()
 						String employeeDob=validateDob();
 						String employeeDoj=validateDoj();
 						try {
-							Connection connetion =DriverManager.getConnection("jdbc:mysql://localhost:3306/s","root","saro@2001");
-							PreparedStatement preparedStatements=connetion.prepareStatement("UPDATE emp SET EmployeeId=?,EmployeeName=?,EmployeeEmailId=?,EmployeeDob=?,EmployeeDoj=? WHERE=?");
+							Connection connetion =DriverManager.getConnection("jdbc:mysql://localhost:3306/emp","root","Aspire@123");
+							PreparedStatement preparedStatements=connetion.prepareStatement("UPDATE employee SET Id=?,Name=?,EmailId=?,Dob=?,Doj=? WHERE=?");
 							preparedStatements.setString(1, employeeId);
 							preparedStatements.setString(2, employeeName);
 							preparedStatements.setString(3, employeeEmailId);
@@ -228,32 +282,45 @@ public String validateDoj()
 		case 4:
 		{
 			System.out.println("Display employee details");
-			int flag=0;
 			System.out.println("Enter the Employee Id to display:");
 			String empid=scan.next();
-			 for(Employee show:list)
-			 {
-				 
-				if(show.getEmployeeId().equals(empid))
-				{
-					System.out.println("Employee Id : "+show.getEmployeeId());
-			        System.out.println("Employee Name : "+show.getEmployeeName());
-			        System.out.println("Employee Email Id : "+show.getEmployeeEmailId());
-			        System.out.println("Employee DOB : "+show.getEmployeeDob());
-			        System.out.println("Employee DOJ : "+show.getEmployeeDoj());
-			        flag=0;
+			String url1="jdbc:mysql://127.0.0.1:3306/emp";
+			String username1="root";
+			String password1="Aspire@123";
+			
+			try {
+				Connection connection= DriverManager.getConnection(url1,username1,password1);
+				Statement statement=connection.createStatement();
+				String sql1="SELECT * FROM employee WHERE ID='"+empid+"'";
+				ResultSet rs=statement.executeQuery(sql1);
+				if(rs.next()) {
+					
+						Thread.sleep(500);
+						System.out.println("Employee ID:"+rs.getString(1));
+						Thread.sleep(500);
+						System.out.println("Employee Name:"+rs.getString(2));
+						Thread.sleep(500);
+						System.out.println("Employee Email:"+rs.getString(3));
+						Thread.sleep(500);
+						System.out.println("Employee DOB:"+rs.getString(4));
+						Thread.sleep(500);
+						System.out.println("Employee DOJ:"+rs.getString(5));
+						Thread.sleep(500);
+						System.out.println("Employee Number:"+rs.getString(6));
+						System.out.println("--------------------------------------------------------------");
+						Thread.sleep(500);
+					
+				}else {
+					System.out.println(">>Record not found...");
+					Thread.sleep(500);
+					System.out.println("--------------------------------------------------------------");
+					Thread.sleep(500);
 				}
-				else
-				{
-					flag=1;
-				}
-				 
-			}
-			 
-			 if(flag==1)
-			 {
-				 System.out.println("Record not found");
-			 }
+				
+				
+			} catch (Exception e) {
+				System.out.println("Please check the employee ID for displaying the details.");
+			}				
 			break;
 		}
 		default:
@@ -265,61 +332,5 @@ public String validateDoj()
 		}
 		while(choice!=5);
 		}
-}
-
-class  Employee {
-    private String employeeId;
-    private String employeeName;
-    private String employeeEmailId;
-    private String employeeDob;
-    private String employeeDoj;
-    
-    Employee(String employeeId,String employeeName,String employeeEmailId,String employeeDob,String employeeDoj)
-    {
-  	  this.employeeId=employeeId;
-  	  this.employeeName=employeeName;
-  	  this.employeeEmailId=employeeEmailId;
-  	  this.employeeDob=employeeDob;
-  	  this.employeeDoj=employeeDoj;
-    }
-	public String getEmployeeId() {
-		return employeeId;
-	}
-	public String getEmployeeName() {
-		return employeeName;
-	}
-	public String getEmployeeEmailId() {
-		return employeeEmailId;
-	}
-	public String getEmployeeDob() {
-		return employeeDob;
-	}
-	public String getEmployeeDoj() {
-		return employeeDoj;
-	}
-	public String toString()
-	{
-		return employeeId+" "+employeeName+" "+employeeEmailId+" "+employeeDob+" "+employeeDoj;
-	}
-	public String validateId()
-	{
-		return employeeId;
-	}
-	public String validateName()
-	{
-		return employeeName;
-	}
-	public String validateEmailId()
-	{
-		return employeeEmailId;
-	}
-	public String validateDob()
-	{
-		return employeeDob;
-	}
-	public String validateDoj()
-	{
-		return employeeDoj;
-	}
 }
 
